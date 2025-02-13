@@ -75,6 +75,9 @@ class LLexer:
 		Parses a single lexeme to a token.
 		"""
 		lexeme = cls.__current_lexeme
+		if len(lexeme) == 0:
+			cls.get_next_token()
+			lexeme = cls.__current_lexeme
 		if is_token(lexeme) is False:
 			if re_match(TOKEN_IDENTITY_MAP["INT_REGEX"], lexeme):
 				return LToken(lexeme, LToken.INT)
