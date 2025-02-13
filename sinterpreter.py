@@ -1,4 +1,5 @@
 from collections.abc import Callable
+from typing_extensions import Any
 
 class InvalidOperator(Exception):
 	pass
@@ -6,13 +7,19 @@ class InvalidOperator(Exception):
 ITEM_TYPE = int | str
 
 class SInterpreter:
-	COMMANDS: dict[str, Callable[[str | int | None], None]] = {
-		
-	}
+	__COMMANDS: dict[str, Callable[[],None] | Callable[[ITEM_TYPE], None]]
 	__stack: list[ITEM_TYPE]
 	__var_map: dict[str, int]
 
 	def __init__(self) -> None:
+		self.__COMMANDS = {
+			"PUSH": self.__push,
+			"ADD": self.__add,
+			"MULT": self.__mult,
+			"UMINUS": self.__uminus,
+			"ASSIGN": self.__assign,
+			"PRINT": self.__print
+		}
 		self.__stack = []
 		self.__var_map = {}
 
