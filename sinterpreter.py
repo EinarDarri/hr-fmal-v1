@@ -71,13 +71,23 @@ class SInterpreter:
 		assignment: pops the two top elements from the stack, assigns  
 		the first element (a value) to the second element (a variable) 
 		"""
-		pass
+		v1 = self.__get_value_from_stack()
+		try:
+			v2 = self.__stack.pop()
+		except IndexError:
+			raise InvalidOperator("The stack is empty, value can't be retrieved")
+		
+		if not isinstance(v2,str):
+			raise InvalidOperator(f"Can't assign {v2} as a variable")
+
+		self.__var_map[v2] = v1
+		
 
 	def __print(self) -> None:
 		"""
 		prints the value currently on top of the stack 
 		"""
-		pass
+		print(self.__stack[-1])
 
 
 
