@@ -29,48 +29,34 @@ class LLexer:
 		elif cls.__is_operator(lex):
 			return LLexer.MODE_OP
 		else:
-			raise Exception("Invalid lex provided to __get_mode")
+			raise Exception(f"Invalid lex ({lex}) provided to __get_mode")
 
 	@classmethod
 	def __get_next_lexeme(cls) -> None:
-		current_mode: int = cls.__get_mode(cls.__remaining_lexeme)
+		current_mode: int = cls.MODE_DEFAULT
 		cls.__current_lexeme = cls.__remaining_lexeme
 		cls.__remaining_lexeme = ""
 		next_char = ""
+
 		# If there is a lexeme from a prior operation cached in the Lexer and it's an operator, return a new token with said lexeme.
 		if cls.__is_operator(cls.__current_lexeme):
 			return
+		else:
+			current_mode = cls.__get_mode(cls.__remaining_lexeme)
+
 		while(True):
 			next_char = stdin.read(1)
-			# Ignore newline/carriage return
-			if next_char == "\n" or next_char == "\r":
+			# Ignore newline/carriage return/whitespace
+			if next_char == "\n" or next_char == "\r" or next_char == " ":
 				continue
-			# Assume a whitespace indicates the end of the token
-			elif next_char == " ":
+			# If the mode is "DEFAULT", it can be overridden to ensure consistent lexemes (e.g. only chars for variables, only numbers for values...)
+			if current_mode == cls.MODE_DEFAULT:
+				current_mode = cls.__get_mode(next_char)
+			
+			# If the tokens are not of the same type, cache the next token and return.
+			if cls.__get_mode(next_char) != current_mode:
+				cls.__remaining_lexeme = next_char
 				break
-
-			if current_mode == LLexer.MODE_DEFAULT:
-				if next_char.isalpha():
-					# Expect characters
-					current_mode = LLexer.MODE_STR
-				elif next_char.isdigit():
-					# Expect numbers
-					current_mode = LLexer.MODE_INT
-				elif cls.__is_operator(next_char):
-					# Expect operators
-					current_mode = LLexer.MODE_OP
-			elif current_mode == LLexer.MODE_STR:
-				if next_char.isalpha() is False:
-					cls.__remaining_lexeme = next_char
-					return
-			elif current_mode == LLexer.MODE_INT:
-				if next_char.isdigit() is False:
-					cls.__remaining_lexeme = next_char
-					return
-			elif current_mode == LLexer.MODE_OP:
-				if cls.__is_operator(next_char) is False:
-					cls.__remaining_lexeme = next_char
-					return
 			cls.__current_lexeme += next_char
 
 	@classmethod
@@ -95,5 +81,6 @@ class LLexer:
 		else:
 			token_identity = get_identity_from_value(get_key_from_value(lexeme))
 			return LToken(lexeme, token_identity)
+		print("LEX: ", int.from_bytes(lexeme.encode()))
 		return LToken("Invalid token", LToken.ERROR)
 	

@@ -12,7 +12,6 @@ class LParser:
 
 	def next_token(self) -> None:
 		self.curr_token = self.lexer.get_next_token()
-		#print(self.curr_token)
 		if self.curr_token.token_code == LToken.ERROR:
 			self.error()
 	
