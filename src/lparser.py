@@ -15,6 +15,8 @@ class LParser:
 			self.statements()
 		except STOP:
 			pass
+		except SyntaxError:
+			print("Syntax error")
 
 	def next_token(self) -> None:
 		self.curr_token = self.lexer.get_next_token()
