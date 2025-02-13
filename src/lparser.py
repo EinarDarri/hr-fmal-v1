@@ -48,6 +48,8 @@ class LParser:
 				self.parse_expression()
 				print("ASSIGN")
 				return
+			
+		print("Syntax error")
 
 	def parse_expression(self) -> None:
 		self.parse_term()
@@ -84,8 +86,11 @@ class LParser:
 		
 		elif token == LToken.RPAREN:
 			pass
+
+		else:
+			self.error()
 		self.next_token()
 
 	def error(self) -> None:
-		raise SyntaxError
 		print("Syntax error")
+		raise SyntaxError
