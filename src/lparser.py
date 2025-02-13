@@ -35,6 +35,8 @@ class LParser:
 		
 		if self.curr_token.token_code == LToken.END:
 			return
+		
+		self.error()
 
 	def parse_statement(self) -> None:
 		token = self.curr_token.token_code
