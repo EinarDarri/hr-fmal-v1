@@ -1,7 +1,6 @@
 from sys import stdin
 from re import match as re_match
-from .constants import TokenIdentityEnum
-from .ltoken import LToken
+from .ltoken import LToken, TokenIdentityEnum
 
 class LLexer:
 
@@ -16,6 +15,9 @@ class LLexer:
 	
 	@classmethod
 	def __parse_token(cls, token : str) -> LToken:
+		if TokenIdentityEnum.is_member(token) is False:
+			return LToken("Invalid token", LToken.ERROR)
+
 		match TokenIdentityEnum(token):
 			case TokenIdentityEnum.PLUS:
 				return LToken(token, LToken.PLUS)
@@ -44,7 +46,7 @@ class LLexer:
 			case TokenIdentityEnum.PRINT:
 				return LToken(token, LToken.PLUS)
 
-		if re_match(TokenIdentityEnum.INT_REGEX,token):
+		if re_match(TokenIdentityEnum.INT_REGEX, token):
 			return LToken(token, LToken.INT)
 
 		if re_match(TokenIdentityEnum.ID_REGEX, token):
