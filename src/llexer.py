@@ -42,21 +42,23 @@ class LLexer:
 		if cls.__is_operator(cls.__current_lexeme):
 			return
 		else:
-			current_mode = cls.__get_mode(cls.__remaining_lexeme)
+			current_mode = cls.__get_mode(cls.__current_lexeme)
 
 		while(True):
 			next_char = stdin.read(1)
 			# Ignore newline/carriage return/whitespace
-			if next_char == "\n" or next_char == "\r" or next_char == " ":
+			if next_char == "\n" or next_char == "\r":
 				continue
+			if next_char == " ":
+				break
 			# If the mode is "DEFAULT", it can be overridden to ensure consistent lexemes (e.g. only chars for variables, only numbers for values...)
 			if current_mode == cls.MODE_DEFAULT:
 				current_mode = cls.__get_mode(next_char)
-			
 			# If the tokens are not of the same type, cache the next token and return.
 			if cls.__get_mode(next_char) != current_mode:
 				cls.__remaining_lexeme = next_char
 				break
+			# print(cls.__current_lexeme, next_char)
 			cls.__current_lexeme += next_char
 
 	@classmethod
