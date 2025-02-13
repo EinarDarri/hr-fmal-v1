@@ -8,6 +8,7 @@ class LLexer:
 	MODE_INT = 0
 	MODE_STR = 1
 	MODE_OP = 2
+	MODE_ERROR = 3
 
 	__current_lexeme = ""
 	__remaining_lexeme = ""
@@ -29,7 +30,7 @@ class LLexer:
 		elif cls.__is_operator(lex):
 			return LLexer.MODE_OP
 		else:
-			raise SyntaxError(f"Invalid lex ({lex}) provided to __get_mode")
+			return LLexer.MODE_ERROR
 
 	@classmethod
 	def __get_next_lexeme(cls) -> None:
