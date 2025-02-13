@@ -1,5 +1,5 @@
 from llexer import LLexer
-from llexer.ltoken import LToken
+from ltoken import LToken
 
 class LParser:
 	def __init__(self, lexer: LLexer) -> None:

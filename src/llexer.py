@@ -1,6 +1,6 @@
 from sys import stdin
 from re import match as re_match
-from .ltoken import LToken, TokenIdentityEnum
+from ltoken import LToken, TokenIdentityEnum
 
 
 class LLexer:
