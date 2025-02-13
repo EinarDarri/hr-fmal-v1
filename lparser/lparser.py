@@ -36,4 +36,5 @@ class LParser:
 		pass
 
 	def error(self) -> None:
-		pass
+		raise SyntaxError
+		print("Syntax error")
