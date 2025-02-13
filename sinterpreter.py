@@ -20,7 +20,10 @@ class SInterpreter:
 		pass
 
 	def __get_value_from_stack(self) -> int:
-		item = self.__stack.pop()
+		try:
+			item = self.__stack.pop()
+		except IndexError:
+			raise InvalidOperator("The stack is empty, value can't be retrieved")
 		if isinstance(item, str):
 			if item not in self.__var_map:
 				raise InvalidOperator(f"f {item} has not been assigned to as variable")
