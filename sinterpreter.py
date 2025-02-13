@@ -63,7 +63,8 @@ class SInterpreter:
 		unary minus: pops the top element from stack, changes its sign  
 		and pushes the result back onto the stack
 		"""
-		pass
+		v1 = self.__get_value_from_stack()
+		self.__stack.append(-v1)
 
 	def __assign(self) -> None:
 		"""
