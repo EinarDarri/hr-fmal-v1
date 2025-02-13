@@ -19,41 +19,50 @@ class SInterpreter:
 	def cycle(self) -> None:
 		pass
 
+	def __get_value_from_stack(self) -> int:
+		item = self.__stack.pop()
+		if isinstance(item, str):
+			if item not in self.__var_map:
+				raise InvalidOperator(f"f {item} has not been assigned to as variable")
+			return self.__var_map[item]
+		elif isinstance(item, int):
+			return item
+
 	# commands
-	def _push(self, item : ITEM_TYPE) -> None:
+	def __push(self, item : ITEM_TYPE) -> None:
 		"""
 		pushes the operand op onto the stack
 		"""
 		self.__stack.append(item)
 
-	def _add(self) -> None:
+	def __add(self) -> None:
 		"""
 		addition: pops the two top elements from the stack, adds their 
 		values and pushes the result back onto the stack
 		"""
 
-	def _mult(self) -> None:
+	def __mult(self) -> None:
 		"""
 		multiplication: pops the two top elements from the stack,  
 		multiplies their values and pushes the result back onto the stack 
 		"""
 		pass
 
-	def _uminus(self) -> None:
+	def __uminus(self) -> None:
 		"""
 		unary minus: pops the top element from stack, changes its sign  
 		and pushes the result back onto the stack
 		"""
 		pass
 
-	def _assign(self) -> None:
+	def __assign(self) -> None:
 		"""
 		assignment: pops the two top elements from the stack, assigns  
 		the first element (a value) to the second element (a variable) 
 		"""
 		pass
 
-	def _print(self) -> None:
+	def __print(self) -> None:
 		"""
 		prints the value currently on top of the stack 
 		"""
