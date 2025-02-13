@@ -33,7 +33,7 @@ class LParser:
 			return
 		
 		if self.curr_token.token_code == LToken.END:
-			return
+			raise STOP
 		
 
 	def parse_statement(self) -> None:
