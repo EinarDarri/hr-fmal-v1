@@ -40,6 +40,10 @@ class SInterpreter:
 		addition: pops the two top elements from the stack, adds their 
 		values and pushes the result back onto the stack
 		"""
+		v1 = self.__get_value_from_stack()
+		v2 = self.__get_value_from_stack()
+		res = v1 +v2
+		self.__stack.append(res)
 
 	def __mult(self) -> None:
 		"""
