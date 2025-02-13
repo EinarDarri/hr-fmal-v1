@@ -1,14 +1,20 @@
 from llexer import LLexer
 from ltoken import LToken
 
+class STOP(Exception):
+	pass
+
 class LParser:
 	def __init__(self, lexer: LLexer) -> None:
 		self.lexer = lexer
 		self.curr_token: LToken
 
 	def parse(self) -> None:
-		self.next_token()
-		self.statements()
+		try:
+			self.next_token()
+			self.statements()
+		except STOP:
+			pass
 
 	def next_token(self) -> None:
 		self.curr_token = self.lexer.get_next_token()
@@ -28,6 +34,8 @@ class LParser:
 		
 		if self.curr_token.token_code == LToken.END:
 			return
+		
+		self.error()
 
 	def parse_statement(self) -> None:
 		token = self.curr_token.token_code
@@ -37,6 +45,7 @@ class LParser:
 			if self.curr_token.token_code == LToken.ID:
 				print(f"PUSH {self.curr_token.lexeme}")
 				print("PRINT")
+				self.next_token()
 				return
 		
 		if token == LToken.ID:
@@ -47,6 +56,8 @@ class LParser:
 				self.parse_expression()
 				print("ASSIGN")
 				return
+			
+		print("Syntax error")
 
 	def parse_expression(self) -> None:
 		self.parse_term()
@@ -83,8 +94,11 @@ class LParser:
 		
 		elif token == LToken.RPAREN:
 			pass
+
+		else:
+			self.error()
 		self.next_token()
 
 	def error(self) -> None:
-		raise SyntaxError
 		print("Syntax error")
+		raise STOP
