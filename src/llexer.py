@@ -83,6 +83,6 @@ class LLexer:
 		else:
 			token_identity = get_identity_from_value(get_key_from_value(lexeme))
 			return LToken(lexeme, token_identity)
-		print("LEX: ", int.from_bytes(lexeme.encode()))
+		#print("LEX: ", int.from_bytes(lexeme.encode()))
 		return LToken("Invalid token", LToken.ERROR)
 	
