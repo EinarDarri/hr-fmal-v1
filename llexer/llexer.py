@@ -119,6 +119,6 @@ class LLexer:
 				return LToken(lexeme, LToken.END)
 
 			elif token_identity == TokenIdentityEnum.PRINT:
-				return LToken(lexeme, LToken.PLUS)
+				return LToken(lexeme, LToken.PRINT)
 		return LToken("Invalid token", LToken.ERROR)
 	
