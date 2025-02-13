@@ -44,6 +44,7 @@ class LParser:
 			if self.curr_token.token_code == LToken.ID:
 				print(f"PUSH {self.curr_token.lexeme}")
 				print("PRINT")
+				self.next_token()
 				return
 		
 		if token == LToken.ID:
