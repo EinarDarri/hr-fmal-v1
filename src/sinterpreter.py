@@ -150,6 +150,8 @@ class SInterpreter:
 			self.__stack.append(item)
 		except IndexError:
 			raise InvalidOperator("PRINT")
+		except VariableNotAssignedException:
+			print(0)
 
 
 
