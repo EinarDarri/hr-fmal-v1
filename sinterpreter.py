@@ -1,7 +1,11 @@
 from collections.abc import Callable
-from typing_extensions import Any
 
 class InvalidOperator(Exception):
+	def __init__(self, nameOfOperator:str, *args: object) -> None:
+		MESSAGE = f"Error for operator: {nameOfOperator}"
+		super().__init__(MESSAGE, *args)
+
+class VariableNotAssignedException(Exception):
 	pass
 
 ITEM_TYPE = int | str
@@ -27,31 +31,41 @@ class SInterpreter:
 		pass
 
 	def __get_value_from_stack(self) -> int:
-		try:
-			item = self.__stack.pop()
-		except IndexError:
-			raise InvalidOperator("The stack is empty, value can't be retrieved")
+		"""
+			:raises IndexError (if the stack is empty)
+			:raises VariableNotAssignedException
+		"""
+		
+		item = self.__stack.pop()
 		if isinstance(item, str):
 			if item not in self.__var_map:
-				raise InvalidOperator(f"f {item} has not been assigned to as variable")
+				raise VariableNotAssignedException(f"f {item} has not been assigned to as variable")
 			return self.__var_map[item]
 		elif isinstance(item, int):
 			return item
 
 	# commands
-	def __push(self, item : ITEM_TYPE) -> None:
+	def __push(self, *args : ITEM_TYPE) -> None:
 		"""
 		pushes the operand op onto the stack
 		"""
-		self.__stack.append(item)
+		if len(args) != 1:
+			raise InvalidOperator("PUSH")
+
+		self.__stack.append(args[0])
 
 	def __add(self) -> None:
 		"""
 		addition: pops the two top elements from the stack, adds their 
 		values and pushes the result back onto the stack
 		"""
-		v1 = self.__get_value_from_stack()
-		v2 = self.__get_value_from_stack()
+		try:
+			v1 = self.__get_value_from_stack()
+			v2 = self.__get_value_from_stack()
+		except IndexError:
+			raise InvalidOperator("ADD")
+		except VariableNotAssignedException:
+			raise InvalidOperator("ADD")
 		res = v1 + v2
 		self.__stack.append(res)
 
@@ -60,8 +74,13 @@ class SInterpreter:
 		multiplication: pops the two top elements from the stack,  
 		multiplies their values and pushes the result back onto the stack 
 		"""
-		v1 = self.__get_value_from_stack()
-		v2 = self.__get_value_from_stack()
+		try:
+			v1 = self.__get_value_from_stack()
+			v2 = self.__get_value_from_stack()
+		except IndexError:
+			raise InvalidOperator("MULT")
+		except VariableNotAssignedException:
+			raise InvalidOperator("MULT")
 		res = v1 * v2
 		self.__stack.append(res)
 
@@ -70,7 +89,12 @@ class SInterpreter:
 		unary minus: pops the top element from stack, changes its sign  
 		and pushes the result back onto the stack
 		"""
-		v1 = self.__get_value_from_stack()
+		try:
+			v1 = self.__get_value_from_stack()
+		except IndexError:
+			raise InvalidOperator("UMINUS")
+		except VariableNotAssignedException:
+			raise InvalidOperator("UMINUS")
 		self.__stack.append(-v1)
 
 	def __assign(self) -> None:
@@ -78,14 +102,16 @@ class SInterpreter:
 		assignment: pops the two top elements from the stack, assigns  
 		the first element (a value) to the second element (a variable) 
 		"""
-		v1 = self.__get_value_from_stack()
 		try:
+			v1 = self.__get_value_from_stack()
 			v2 = self.__stack.pop()
 		except IndexError:
-			raise InvalidOperator("The stack is empty, value can't be retrieved")
+			raise InvalidOperator("ASSIGN")
+			#raise InvalidOperator("The stack is empty, value can't be retrieved")
 		
 		if not isinstance(v2,str):
-			raise InvalidOperator(f"Can't assign {v2} as a variable")
+			raise InvalidOperator("ASSIGN")
+			#raise InvalidOperator(f"Can't assign {v2} as a variable")
 
 		self.__var_map[v2] = v1
 		
@@ -94,9 +120,12 @@ class SInterpreter:
 		"""
 		prints the value currently on top of the stack 
 		"""
-		print(self.__stack[-1])
+		try:
+			print(self.__stack[-1])
+		except IndexError:
+			raise InvalidOperator("PRINT")
 
 
 
 if __name__ == "__main__":
-	pass
+	raise InvalidOperator("Push")
