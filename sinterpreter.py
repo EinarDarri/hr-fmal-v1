@@ -9,11 +9,11 @@ class SInterpreter:
 	COMMANDS: dict[str, Callable[[str | int | None], None]] = {
 		
 	}
-	__command_stack: list[str]
+	__stack: list[str]
 	__var_map: dict[str, int]
 
 	def __init__(self) -> None:
-		self.__command_stack = []
+		self.__stack = []
 		self.__var_map = {}
 
 	def cycle(self) -> None:
