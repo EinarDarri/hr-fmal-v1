@@ -32,6 +32,8 @@ class SInterpreter:
 
 	def cycle(self) -> None:
 		for line in stdin:
+			if line == "\n":
+				return
 			line = line.split()
 			command = line[0]
 			if command not in self.__COMMANDS:
@@ -150,6 +152,8 @@ class SInterpreter:
 			self.__stack.append(item)
 		except IndexError:
 			raise InvalidOperator("PRINT")
+		except VariableNotAssignedException:
+			print(0)
 
 
 
