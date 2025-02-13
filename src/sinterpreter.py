@@ -1,6 +1,7 @@
 from collections.abc import Callable
 from sys import stdin
 from re import match as re_match
+from typing import Union
 
 class InvalidOperator(Exception):
 	def __init__(self, nameOfOperator:str, *args: object) -> None:
@@ -10,7 +11,7 @@ class InvalidOperator(Exception):
 class VariableNotAssignedException(Exception):
 	pass
 
-ITEM_TYPE = int | str
+ITEM_TYPE = Union[int, str]
 
 class SInterpreter:
 	__COMMANDS: dict[str, Callable[[],None] | Callable[[ITEM_TYPE], None]]
