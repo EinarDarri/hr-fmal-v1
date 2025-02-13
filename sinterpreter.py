@@ -1,4 +1,6 @@
 from collections.abc import Callable
+from sys import stdin
+from re import match as re_match
 
 class InvalidOperator(Exception):
 	def __init__(self, nameOfOperator:str, *args: object) -> None:
@@ -26,9 +28,19 @@ class SInterpreter:
 		}
 		self.__stack = []
 		self.__var_map = {}
+		self.__line_count:int = 0
 
 	def cycle(self) -> None:
-		pass
+		line = stdin.readline().split()
+		command = line[0]
+		if command not in self.__COMMANDS:
+			raise InvalidOperator(command)
+		
+		if len(line) > 1:
+			self.__COMMANDS[command](*line[1::])
+		else:
+			self.__COMMANDS[command]()
+
 
 	def __get_value_from_stack(self) -> int:
 		"""
@@ -49,10 +61,21 @@ class SInterpreter:
 		"""
 		pushes the operand op onto the stack
 		"""
+		# push parsec number from string to ints so if it gets a int something is wrong
+		if isinstance(args[0],int):
+			raise InvalidOperator("PUSH")
+
 		if len(args) != 1:
 			raise InvalidOperator("PUSH")
 
+		# if it is a number then convert it
+		if re_match("[0-9]+",args[0]):
+			item = int(args[0])
+			self.__stack.append(item)
+			return
+		
 		self.__stack.append(args[0])
+
 
 	def __add(self) -> None:
 		"""
@@ -128,4 +151,7 @@ class SInterpreter:
 
 
 if __name__ == "__main__":
-	raise InvalidOperator("Push")
+	interpreter = SInterpreter() 
+	interpreter.cycle() 
+	interpreter.cycle()
+	interpreter.cycle()
