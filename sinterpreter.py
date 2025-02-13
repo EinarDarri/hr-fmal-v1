@@ -31,15 +31,16 @@ class SInterpreter:
 		self.__line_count:int = 0
 
 	def cycle(self) -> None:
-		line = stdin.readline().split()
-		command = line[0]
-		if command not in self.__COMMANDS:
-			raise InvalidOperator(command)
-		
-		if len(line) > 1:
-			self.__COMMANDS[command](*line[1::])
-		else:
-			self.__COMMANDS[command]()
+		for line in stdin:
+			line = line.split()
+			command = line[0]
+			if command not in self.__COMMANDS:
+				raise InvalidOperator(command)
+			
+			if len(line) > 1:
+				self.__COMMANDS[command](*line[1::])
+			else:
+				self.__COMMANDS[command]() #type: ignore
 
 
 	def __get_value_from_stack(self) -> int:
@@ -144,7 +145,9 @@ class SInterpreter:
 		prints the value currently on top of the stack 
 		"""
 		try:
-			print(self.__stack[-1])
+			item = self.__get_value_from_stack()
+			print(item)
+			self.__stack.append(item)
 		except IndexError:
 			raise InvalidOperator("PRINT")
 
@@ -153,5 +156,3 @@ class SInterpreter:
 if __name__ == "__main__":
 	interpreter = SInterpreter() 
 	interpreter.cycle() 
-	interpreter.cycle()
-	interpreter.cycle()
