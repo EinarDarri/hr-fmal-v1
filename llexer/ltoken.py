@@ -9,7 +9,7 @@ class TokenIdentityEnum(StrEnum):
 	ASSIGN = "="
 	SEMICOL = ";"
 	INT_REGEX = "[0-9]+"
-	ID_REGEX = "[A-Za-Z]+"
+	ID_REGEX = "[A-Za-z]+"
 	END = "end"
 	PRINT = "print"
 
@@ -38,10 +38,13 @@ class LToken:
 	END = 10
 	ERROR = -1
 
-	def __init__(self, lexeme: str, token: int = -1) -> None:
+	def __init__(self, lexeme: str, token_code: int = -1) -> None:
 		self.lexeme: str = lexeme
-		self.token: int = token
+		self.token_code: int = token_code
+
+	def __str__(self) -> str:
+		return f"LToken({self.lexeme}, {self.token_code})"
 	
 	@property
 	def is_valid(self) -> bool:
-		return self.token != LToken.ERROR
+		return self.token_code != LToken.ERROR

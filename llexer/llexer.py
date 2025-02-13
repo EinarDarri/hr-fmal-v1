@@ -2,54 +2,104 @@ from sys import stdin
 from re import match as re_match
 from .ltoken import LToken, TokenIdentityEnum
 
+
 class LLexer:
+	MODE_INT = 0
+	MODE_STR = 1
+	MODE_OP = 2
+
+	__current_lexeme = ""
+	__remaining_lexeme = ""
 
 	@classmethod
 	def get_next_token(cls) -> LToken:
-		return cls.__parse_token(cls.__read_token())
-
-	@classmethod
-	def __read_token(cls) -> str:
-		token = stdin.read(1)
-		return token
+		cls.__get_next_lexeme()
+		return cls.__parse_token()
 	
 	@classmethod
-	def __parse_token(cls, token : str) -> LToken:
-		if TokenIdentityEnum.is_member(token) is False:
-			return LToken("Invalid token", LToken.ERROR)
+	def __get_mode(cls, lex: str) -> int:
+		if lex == "":
+			return -1
+		elif lex.isalpha():
+			return LLexer.MODE_STR
+		elif lex.isdigit():
+			return LLexer.MODE_INT
+		else:
+			return LLexer.MODE_OP
 
-		match TokenIdentityEnum(token):
-			case TokenIdentityEnum.PLUS:
-				return LToken(token, LToken.PLUS)
+	@classmethod
+	def __get_next_lexeme(cls) -> None:
+		current_mode: int = cls.__get_mode(cls.__remaining_lexeme)
+		cls.__current_lexeme = cls.__remaining_lexeme
+		cls.__remaining_lexeme = ""
+		if current_mode == LLexer.MODE_OP:
+			return
+		next_char = ""
+		while(True):
+			next_char = stdin.read(1)
+			if next_char == " " or next_char == "\n" or next_char == 0:
+				break
+			if current_mode == -1:
+				if next_char.isalpha():
+					current_mode = LLexer.MODE_STR
+				elif next_char.isdigit():
+					current_mode = LLexer.MODE_INT
+				else:
+					current_mode = LLexer.MODE_OP
+			elif current_mode == LLexer.MODE_STR:
+				if next_char.isalpha() is False:
+					cls.__remaining_lexeme = next_char
+					return
+			elif current_mode == LLexer.MODE_INT:
+				if next_char.isdigit() is False:
+					cls.__remaining_lexeme = next_char
+					return
+			elif current_mode == LLexer.MODE_OP:
+				if cls.__is_operator(next_char) is False:
+					cls.__remaining_lexeme = next_char
+			cls.__current_lexeme += next_char
 
-			case TokenIdentityEnum.MINUS:
-				return LToken(token, LToken.MINUS)
+	@classmethod
+	def __is_operator(cls, lex: str) -> bool:
+		return lex in "()-+=*;"
 
-			case TokenIdentityEnum.MULT:
-				return LToken(token, LToken.MULT)
+	@classmethod
+	def __parse_token(cls) -> LToken:
+		lexeme = cls.__current_lexeme
+		# print("lex is: ", lexeme)
+		if TokenIdentityEnum.is_member(lexeme) is False:
+			if re_match(TokenIdentityEnum.INT_REGEX, lexeme):
+				return LToken(lexeme, LToken.INT)
 
-			case TokenIdentityEnum.LPAREN:
-				return LToken(token, LToken.LPAREN)
+			if re_match(TokenIdentityEnum.ID_REGEX, lexeme):
+				return LToken(lexeme, LToken.ID)
+		else:
+			match TokenIdentityEnum(lexeme):
+				case TokenIdentityEnum.PLUS:
+					return LToken(lexeme, LToken.PLUS)
 
-			case TokenIdentityEnum.RPAREN:
-				return LToken(token, LToken.RPAREN)
+				case TokenIdentityEnum.MINUS:
+					return LToken(lexeme, LToken.MINUS)
 
-			case TokenIdentityEnum.ASSIGN:
-				return LToken(token, LToken.ASSIGN)
+				case TokenIdentityEnum.MULT:
+					return LToken(lexeme, LToken.MULT)
 
-			case TokenIdentityEnum.SEMICOL:
-				return LToken(token, LToken.SEMICOL)
+				case TokenIdentityEnum.LPAREN:
+					return LToken(lexeme, LToken.LPAREN)
 
-			case TokenIdentityEnum.END:
-				return LToken(token, LToken.END)
+				case TokenIdentityEnum.RPAREN:
+					return LToken(lexeme, LToken.RPAREN)
 
-			case TokenIdentityEnum.PRINT:
-				return LToken(token, LToken.PLUS)
+				case TokenIdentityEnum.ASSIGN:
+					return LToken(lexeme, LToken.ASSIGN)
 
-		if re_match(TokenIdentityEnum.INT_REGEX, token):
-			return LToken(token, LToken.INT)
+				case TokenIdentityEnum.SEMICOL:
+					return LToken(lexeme, LToken.SEMICOL)
 
-		if re_match(TokenIdentityEnum.ID_REGEX, token):
-			return LToken(token, LToken.ID)
+				case TokenIdentityEnum.END:
+					return LToken(lexeme, LToken.END)
 
+				case TokenIdentityEnum.PRINT:
+					return LToken(lexeme, LToken.PLUS)
+		print(lexeme, " INVALID")
 		return LToken("Invalid token", LToken.ERROR)
