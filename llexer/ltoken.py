@@ -38,6 +38,21 @@ class LToken:
 	END = 10
 	ERROR = -1
 
+	converter = {
+			0:"ID",
+			1:"ASSIGN",
+			2:"SEMICOL",
+			3:"INT",
+			4:"PLUS",
+			5:"UMINUS",
+			6:"MULT",
+			7:"LPAREN",
+			8:"RPAREN",
+			9:"PRINT",
+			10:"END",
+			-1:"ERROR"
+			}
+
 	def __init__(self, lexeme: str, token_code: int = -1) -> None:
 		self.lexeme: str = lexeme
 		self.token_code: int = token_code
@@ -47,18 +62,4 @@ class LToken:
 		return self.token_code != LToken.ERROR
 	
 	def __str__(self) -> str:
-		converter = {
-			0:"ID",
-			1:"ASSIGN",
-			2:"SEMICOL",
-			3:"INT",
-			4:"PLUS",
-			5:"MINUS",
-			6:"MULT",
-			7:"LPAREN",
-			8:"RPAREN",
-			9:"PRINT",
-			10:"END",
-			-1:"ERROR"
-			}
-		return f"given string '{self.lexeme}', token : {converter[self.token_code]}"
+		return f"given string '{self.lexeme}', token : {self.converter[self.token_code]}"
