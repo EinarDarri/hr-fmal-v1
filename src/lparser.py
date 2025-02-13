@@ -1,14 +1,20 @@
 from llexer import LLexer
 from ltoken import LToken
 
+class STOP(Exception):
+	pass
+
 class LParser:
 	def __init__(self, lexer: LLexer) -> None:
 		self.lexer = lexer
 		self.curr_token: LToken
 
 	def parse(self) -> None:
-		self.next_token()
-		self.statements()
+		try:
+			self.next_token()
+			self.statements()
+		except STOP:
+			pass
 
 	def next_token(self) -> None:
 		self.curr_token = self.lexer.get_next_token()
@@ -93,4 +99,4 @@ class LParser:
 
 	def error(self) -> None:
 		print("Syntax error")
-		raise SyntaxError
+		raise STOP
