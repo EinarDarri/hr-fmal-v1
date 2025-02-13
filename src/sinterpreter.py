@@ -38,11 +38,14 @@ class SInterpreter:
 			command = line[0]
 			if command not in self.__COMMANDS:
 				raise InvalidOperator(command)
-			
-			if len(line) > 1:
-				self.__COMMANDS[command](*line[1::])
-			else:
-				self.__COMMANDS[command]() #type: ignore
+			try:
+				if len(line) > 1:
+					self.__COMMANDS[command](*line[1::])
+				else:
+					self.__COMMANDS[command]() #type: ignore
+			except InvalidOperator:
+				print(f"Error for operator: {command}")
+				break
 
 
 	def __get_value_from_stack(self) -> int:
