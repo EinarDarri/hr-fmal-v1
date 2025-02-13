@@ -36,9 +36,9 @@ class SInterpreter:
 				return
 			line = line.split()
 			command = line[0]
-			if command not in self.__COMMANDS:
-				raise InvalidOperator(command)
 			try:
+				if command not in self.__COMMANDS:
+					raise InvalidOperator(command)
 				if len(line) > 1:
 					self.__COMMANDS[command](*line[1::])
 				else:
