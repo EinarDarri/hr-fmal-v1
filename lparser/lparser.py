@@ -4,15 +4,16 @@ from llexer.ltoken import LToken
 class LParser:
 	def __init__(self, lexer: LLexer) -> None:
 		self.lexer = lexer
-		self.curr_token: LToken | None = None
+		self.curr_token: LToken
 
 	def parse(self) -> None:
 		self.next_token()
 		self.statements()
+		print()
 
-	def next_token(self):
+	def next_token(self) -> None:
 		self.curr_token = self.lexer.get_next_token()
-		if self.curr_token.is_valid is False:
+		if self.curr_token.token_code == LToken.ERROR:
 			self.error()
 	
 	def statements(self) -> None:
