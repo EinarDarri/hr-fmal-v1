@@ -1,5 +1,5 @@
-from llexer.ltoken import LToken
-from llexer.llexer import LLexer
+from src.ltoken import LToken
+from src.llexer import LLexer
 
 if __name__ == "__main__":
 	lexer = LLexer()

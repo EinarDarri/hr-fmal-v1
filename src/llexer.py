@@ -1,6 +1,6 @@
 from sys import stdin
 from re import match as re_match
-from ltoken import LToken, TokenIdentityEnum
+from ltoken import LToken, TOKEN_IDENTITY_MAP, is_token, get_key_from_value, get_identity_from_value
 
 
 class LLexer:
@@ -86,39 +86,14 @@ class LLexer:
 		Parses a single lexeme to a token.
 		"""
 		lexeme = cls.__current_lexeme
-		if TokenIdentityEnum.is_member(lexeme) is False:
-			if re_match(TokenIdentityEnum.INT_REGEX, lexeme):
+		if is_token(lexeme) is False:
+			if re_match(TOKEN_IDENTITY_MAP["INT_REGEX"], lexeme):
 				return LToken(lexeme, LToken.INT)
 
-			if re_match(TokenIdentityEnum.ID_REGEX, lexeme):
+			if re_match(TOKEN_IDENTITY_MAP["ID_REGEX"], lexeme):
 				return LToken(lexeme, LToken.ID)
 		else:
-			token_identity = TokenIdentityEnum(lexeme)
-			if token_identity == TokenIdentityEnum.PLUS:
-				return LToken(lexeme, LToken.PLUS)
-
-			elif token_identity == TokenIdentityEnum.MINUS:
-				return LToken(lexeme, LToken.MINUS)
-
-			elif token_identity == TokenIdentityEnum.MULT:
-				return LToken(lexeme, LToken.MULT)
-
-			elif token_identity == TokenIdentityEnum.LPAREN:
-				return LToken(lexeme, LToken.LPAREN)
-
-			elif token_identity == TokenIdentityEnum.RPAREN:
-				return LToken(lexeme, LToken.RPAREN)
-
-			elif token_identity == TokenIdentityEnum.ASSIGN:
-				return LToken(lexeme, LToken.ASSIGN)
-
-			elif token_identity == TokenIdentityEnum.SEMICOL:
-				return LToken(lexeme, LToken.SEMICOL)
-
-			elif token_identity == TokenIdentityEnum.END:
-				return LToken(lexeme, LToken.END)
-
-			elif token_identity == TokenIdentityEnum.PRINT:
-				return LToken(lexeme, LToken.PRINT)
+			token_identity = get_identity_from_value(get_key_from_value(lexeme))
+			return LToken(lexeme, token_identity)
 		return LToken("Invalid token", LToken.ERROR)
 	

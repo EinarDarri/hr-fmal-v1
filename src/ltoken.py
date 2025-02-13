@@ -1,26 +1,46 @@
-from enum import StrEnum
+TOKEN_IDENTITY_MAP = {
+	"PLUS": "+",
+	"MINUS": "-",
+	"MULT": "*",
+	"LPAREN": "(",
+	"RPAREN": ")",
+	"ASSIGN": "=",
+	"SEMICOL": ";",
+	"INT_REGEX": "[0-9]+",
+	"ID_REGEX": "[A-Za-z]+",
+	"END": "end",
+	"PRINT": "print"
+}
 
-class TokenIdentityEnum(StrEnum):
-	PLUS = "+"
-	MINUS = "-"
-	MULT = "*"
-	LPAREN = "("
-	RPAREN = ")"
-	ASSIGN = "="
-	SEMICOL = ";"
-	INT_REGEX = "[0-9]+"
-	ID_REGEX = "[A-Za-z]+"
-	END = "end"
-	PRINT = "print"
+def get_key_from_value(val: str) -> str:
+	for key, value in TOKEN_IDENTITY_MAP.items():
+		if value == val:
+			return key
+	raise Exception(f"Value ({val}) not found in TOKEN_IDENTITY_MAP")
 
-	@classmethod
-	def is_member(cls, token: str) -> bool:
-		"""
-		Utility method to check if a provided token is actually a member of this enum.
+def is_token(lex: str) -> bool:
+	return lex in TOKEN_IDENTITY_MAP.values()
 
-		:returns: True if the token is a member of this enum. False otherwise.
-		"""
-		return token in cls._value2member_map_
+VALUE_IDENTITY_MAP = {
+	0: "ID",
+	1: "ASSIGN",
+	2: "SEMICOL",
+	3: "INT",
+	4: "PLUS",
+	5: "MINUS",
+	6: "MULT",
+	7: "LPAREN",
+	8: "RPAREN",
+	9: "PRINT",
+	10: "END",
+	-1: "ERROR",
+}
+
+def get_identity_from_value(val: str) -> int:
+	for key, value in VALUE_IDENTITY_MAP.items():
+		if value == val:
+			return key
+	raise Exception(f"Value ({val}) not found in VALUE_IDENTITY_MAP")
 
 class LToken:
 
@@ -38,21 +58,6 @@ class LToken:
 	END = 10
 	ERROR = -1
 
-	converter = {
-			0:"ID",
-			1:"ASSIGN",
-			2:"SEMICOL",
-			3:"INT",
-			4:"PLUS",
-			5:"UMINUS",
-			6:"MULT",
-			7:"LPAREN",
-			8:"RPAREN",
-			9:"PRINT",
-			10:"END",
-			-1:"ERROR"
-			}
-
 	def __init__(self, lexeme: str, token_code: int = -1) -> None:
 		self.lexeme: str = lexeme
 		self.token_code: int = token_code
@@ -62,4 +67,4 @@ class LToken:
 		return self.token_code != LToken.ERROR
 	
 	def __str__(self) -> str:
-		return f"given string '{self.lexeme}', token : {self.converter[self.token_code]}"
+		return f"given string '{self.lexeme}', token : {VALUE_IDENTITY_MAP[self.token_code]}"
