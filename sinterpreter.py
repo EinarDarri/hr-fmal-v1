@@ -45,7 +45,7 @@ class SInterpreter:
 		"""
 		v1 = self.__get_value_from_stack()
 		v2 = self.__get_value_from_stack()
-		res = v1 +v2
+		res = v1 + v2
 		self.__stack.append(res)
 
 	def __mult(self) -> None:
@@ -53,7 +53,10 @@ class SInterpreter:
 		multiplication: pops the two top elements from the stack,  
 		multiplies their values and pushes the result back onto the stack 
 		"""
-		pass
+		v1 = self.__get_value_from_stack()
+		v2 = self.__get_value_from_stack()
+		res = v1 * v2
+		self.__stack.append(res)
 
 	def __uminus(self) -> None:
 		"""
