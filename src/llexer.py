@@ -29,7 +29,7 @@ class LLexer:
 		elif cls.__is_operator(lex):
 			return LLexer.MODE_OP
 		else:
-			raise Exception(f"Invalid lex ({lex}) provided to __get_mode")
+			raise SyntaxError(f"Invalid lex ({lex}) provided to __get_mode")
 
 	@classmethod
 	def __get_next_lexeme(cls) -> None:
